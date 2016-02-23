@@ -1,2 +1,2 @@
-tests:
-	python setup.py install
+test:
+	python setup.py install && tox -e py27
