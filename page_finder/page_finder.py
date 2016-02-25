@@ -108,13 +108,14 @@ class KNNGraph(object):
 
     def add_point(self, point):
         if point in self.point_space.points:
-            return
+            return False
         self.point_space.add(point)
         new_nb = Neighborhood(point, self.distance, k=self.k)
         for nb in self.graph:
             nb.add_point(point)
             new_nb.add_point(nb.point)
         self.graph.append(new_nb)
+        return True
 
     def del_point(self, point):
         if point not in self.point_space.points:
@@ -209,7 +210,8 @@ class LinkAnnotation(object):
         return self.knn_graph.point_space.points
 
     def add_link(self, link):
-        self.knn_graph.add_point(link)
+        if self.knn_graph.add_point(link):
+            self._update = True
 
     def del_link(self, link):
         self.knn_graph.del_point(link)
@@ -221,7 +223,6 @@ class LinkAnnotation(object):
     def load(self, links):
         for link in links:
             self.add_link(link)
-        self._update = True
 
     def mark_link(self, link, follow=True):
         self.add_link(link)
@@ -255,6 +256,7 @@ class LinkAnnotation(object):
         self._update = False
 
     def link_scores(self, link):
+        self.add_link(link)
         if self._update:
             self._propagate_labels()
         link_id = self.knn_graph.point_space.get_id(link)
