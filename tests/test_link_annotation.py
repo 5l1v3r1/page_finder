@@ -35,3 +35,19 @@ def test_hnews():
 
     assert(best[0] == 'https://news.ycombinator.com/news?p=2')
     assert(best[1] == 'https://news.ycombinator.com/news?p=3')
+
+
+def test_equal_distance():
+    link_annotation = page_finder.LinkAnnotation()
+    link_annotation.mark_link('http://page_1')
+    more_links = [
+        'http://page_2',
+        'http://page_3',
+        'http://page_4',
+        'http://page_5',
+        'http://page_6',
+        'http://page_7',
+    ]
+    link_annotation.load(more_links)
+    for link in more_links:
+        assert link_annotation.is_follow_link(link)

@@ -80,10 +80,13 @@ class Neighborhood(object):
     def add_point(self, new_point):
         new_pair = OrderedPoint(new_point,
                                 self.distance(new_point, self.point))
-        if len(self.near) == self.k:
-            heapq.heappushpop(self.near, new_pair)
-        else:
-            heapq.heappush(self.near, new_pair)
+        heapq.heappush(self.near, new_pair)
+        while len(self.near) >= self.k:
+            furthest = heapq.nsmallest(1, self.near)[0]
+            if furthest.distance > new_pair.distance:
+                heapq.heappop(self.near)
+            else:
+                break
 
     def del_point(self, del_point):
         update = False
@@ -176,15 +179,13 @@ def number_preprocessor(url):
                   url)
 
 
-
 def dont_preprocess(url):
     return url
 
 
 class LinkAnnotation(object):
     def __init__(self, k=5, alpha=0.95,
-                 sigma=None, eps=1e-3, min_score=None,
-                 preprocess=number_preprocessor):
+                 sigma=None, eps=1e-3, preprocess=number_preprocessor):
         self.marked = {}
         def distance_func(a, b):
             if not isinstance(a, str):
@@ -197,13 +198,10 @@ class LinkAnnotation(object):
             k=k)
         self.alpha = alpha
         self.sigma = sigma
+        self.min_score = 0
         self.eps = eps
         self._labels = None
         self._update = False
-        if min_score is None:
-            self.min_score = self.alpha/4.0
-        else:
-            self.min_score = min_score
 
     @property
     def links(self):
@@ -242,6 +240,17 @@ class LinkAnnotation(object):
         else:
             return sigma/float(n)
 
+    def _min_score_estimation(self):
+        min_score = 0.0
+        n = 0
+        for link, follow in self.marked.iteritems():
+            min_score += self.link_scores(link)[0]
+            n += 1
+        if n > 0:
+            return 0.25*min_score/float(n)
+        else:
+            return 0.0
+
     def _propagate_labels(self):
         n = len(self.links)
         Y = np.zeros((n, 2))
@@ -254,6 +263,7 @@ class LinkAnnotation(object):
         self._labels = label_propagation(
             self.knn_graph.gaussian_kernel(sigma, size=n), Y, self.alpha, self.eps)
         self._update = False
+        self.min_score = self._min_score_estimation()
 
     def link_scores(self, link):
         self.add_link(link)
@@ -266,6 +276,8 @@ class LinkAnnotation(object):
         s1, s2 = self.link_scores(link)
         if s1 >= self.min_score or s2 >= self.min_score:
             return s1 >= s2
+        else:
+            return False
 
     def follow_links(self):
         return [link for link in self.links if self.is_follow_link(link)]
