@@ -1,0 +1,6 @@
+*.pyc
+*.so
+.tox
+build
+dist
+page_finder.egg-info

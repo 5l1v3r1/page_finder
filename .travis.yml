@@ -7,3 +7,13 @@ install:
 
 script:
   - py.test
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: scrapinghub
+  password:
+    secure: cgF4Z+PMqDL9duHmjixjf8wjozms+PVsyYNgyttISUoRMqVZPtXJkbfNc4QaxpGX9GhKquf0TAeut4fM5+9Eb0q/Srpq3x0Mn3yXk4LwxUcNvFi3vxDtTxv/6lfNLcZedtsgzs+Ixeb+fg1Q4iGhSrnxKDBWdT6sPbCO4zXtqysb7PAi8CevfyIt7Jq7etzC0K7SwO4CBMpsMp2TmeZq83s+TZzRMxvsDQEtb3eGtLaDc3X/Z7yz9SfLqobF97yvp0opjf3jBfgOD5blO/ld7M7pQDSe6VgDmAiUlPaxaMEh5o6nWFegZT+xfoLvlkY84pusIfECpjNhnK4t+OQLciXIjgMEQc20CncklNIZ0AFBnjKlbFFyXfuPvAW/NxMYd/fTbJmIOCrgdK1ocotNd7bOE1myMLdhdzLScpph5dYChfJC0clHB4E0paDxxR+BXQAfL/N9wnBBhe55vuArRYcm9TS3eRpYAzV8+shW2l0aT60Tql1gCmZ6bFql4t4BTO80VFKLVISCRD2VfFn+Wm/wpMzQ5qlDVoVLeNPjzFgLiID6RQhUE16E7gyefFfEyYqt8ACrioqgxz0EmpQ6eaekyAorTOelqon9dLQTpywWQVNIjnjtJsCG0WJYkVktWsJBcpvyu9PZwjkdiUUDyJq4qP6l2ZCyZqqymRjJnCY=
+  on:
+    tags: true
+    repo: scrapinghub/page_finder
+    condition: "$TRAVIS_TAG =~ ^page_finder-[0-9][.][0-9]*"
