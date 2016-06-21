@@ -1,6 +1,11 @@
 #include <Python.h>
 #include <string.h>
+
+#if defined(__MACH__)
+#include <stdlib.h>
+#else
 #include <malloc.h>
+#endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
