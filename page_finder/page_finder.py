@@ -3,13 +3,34 @@ import re
 
 import numpy as np
 
-from .edit_distance import levenshtein
+from ordered_set import OrderedSet
+
+try:
+    from .edit_distance import levenshtein
+except ImportError:
+    def levenshtein(s1, s2):
+        if len(s1) < len(s2):
+            return levenshtein(s2, s1)
+
+        if len(s2) == 0:
+            return len(s1)
+
+        previous_row = range(len(s2) + 1)
+        for i, c1 in enumerate(s1):
+            current_row = [i + 1]
+            for j, c2 in enumerate(s2):
+                insertions = previous_row[j + 1] + 1
+                deletions = current_row[j] + 1
+                substitutions = previous_row[j] + (c1 != c2)
+                current_row.append(min(insertions, deletions, substitutions))
+            previous_row = current_row
+        return previous_row[-1]
 
 
 class PointSpace(object):
     """Given a point will assign numeric IDs"""
     def __init__(self):
-        self.points = set()
+        self.points = OrderedSet()
         self.point_to_id = {}
         self._updated = True
 
@@ -44,6 +65,15 @@ class OrderedPoint(object):
     def __cmp__(self, other):
         """Farthest point first"""
         return -cmp(self.distance, other.distance)
+
+    def __eq__(self, other):
+        return self.distance == other.distance
+
+    def __lt__(self, other):
+        return self.distance < other.distance
+
+    def __gt__(self, other):
+        return self.distance > other.distance
 
     def __str__(self):
         return self.__repr__()
@@ -243,7 +273,7 @@ class LinkAnnotation(object):
     def _min_score_estimation(self):
         min_score = 0.0
         n = 0
-        for link, follow in self.marked.iteritems():
+        for link, follow in self.marked.items():
             min_score += self.link_scores(link)[0]
             n += 1
         if n > 0:
@@ -254,7 +284,7 @@ class LinkAnnotation(object):
     def _propagate_labels(self):
         n = len(self.links)
         Y = np.zeros((n, 2))
-        for link, follow in self.marked.iteritems():
+        for link, follow in self.marked.items():
             link_id = self.knn_graph.point_space.get_id(link)
             Y[link_id, 0] = follow
             Y[link_id, 1] = not follow

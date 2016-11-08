@@ -1,4 +1,7 @@
-import urlparse
+try:
+    from urlparse import urljoin
+except ImportError:
+    from urllib.parse import urljoin
 
 import scrapely
 
@@ -21,7 +24,7 @@ def _extract_all_links(page_or_url):
         if is_link(fragment):
             link = fragment.attributes.get('href')
             if link:
-                yield urlparse.urljoin(page.url, link)
+                yield urljoin(page.url, link)
 
 
 def extract_all_links(page_or_url):
