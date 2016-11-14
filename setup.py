@@ -9,7 +9,7 @@ setup(
     author='page_finder developers',
     maintainer='Pedro Lopez-Adeva Fernandez-Layos',
     maintainer_email='pedro@scrapinghub.com',
-    install_requires=['numpy', 'ordered-set'],
+    install_requires=['numpy'],
     packages=['page_finder'],
     ext_modules=[Extension("page_finder.edit_distance",
                  sources=["page_finder/edit_distance.c"])],

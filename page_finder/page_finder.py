@@ -3,8 +3,7 @@ import re
 import functools
 
 import numpy as np
-
-from ordered_set import OrderedSet
+from collections import OrderedDict
 
 try:
     from .edit_distance import levenshtein
@@ -32,7 +31,7 @@ from .url_distance import url_distance
 class PointSpace(object):
     """Given a point will assign numeric IDs"""
     def __init__(self):
-        self.points = OrderedSet()
+        self.points = OrderedDict()
         self.point_to_id = {}
         self._updated = True
 
@@ -46,11 +45,11 @@ class PointSpace(object):
         self._updated = True
 
     def add(self, point):
-        self.points.add(point)
+        self.points[point] = True
         self._updated = False
 
     def delete(self, point):
-        self.points.discard(point)
+        self.points.pop(point, None)
         self._updated = False
 
     def get_id(self, point):

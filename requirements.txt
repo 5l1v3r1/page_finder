@@ -1,3 +1,2 @@
 numpy>=1.10.2
-ordered-set==2.0.1
 six==1.5.2
