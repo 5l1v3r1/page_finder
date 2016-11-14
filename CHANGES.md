@@ -1,5 +1,15 @@
 Page Finder
 
+Release 0.1.5
+-------------
+
+Add function for calculating URL distance
+
+Release 0.1.4
+-------------
+
+Add Python 3 support
+
 Release 0.1.3
 -------------
 
