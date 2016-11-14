@@ -1,5 +1,6 @@
 import heapq
 import re
+import functools
 
 import numpy as np
 
@@ -25,6 +26,7 @@ except ImportError:
                 current_row.append(min(insertions, deletions, substitutions))
             previous_row = current_row
         return previous_row[-1]
+from .url_distance import url_distance
 
 
 class PointSpace(object):
@@ -213,16 +215,23 @@ def dont_preprocess(url):
     return url
 
 
+def character_distance(preprocess, a, b):
+    if not isinstance(a, str):
+        a = a.encode('ascii', 'ignore')
+    if not isinstance(b, str):
+        b = b.encode('ascii', 'ignore')
+    levenshtein(preprocess(a), preprocess(b))
+
+
 class LinkAnnotation(object):
     def __init__(self, k=5, alpha=0.95,
-                 sigma=None, eps=1e-3, preprocess=number_preprocessor):
+                 sigma=None, eps=1e-3, min_score=None,
+                 preprocess=number_preprocessor,
+                 distance_function=url_distance):
         self.marked = {}
-        def distance_func(a, b):
-            if not isinstance(a, str):
-                a = a.encode('ascii', 'ignore')
-            if not isinstance(b, str):
-                b = b.encode('ascii', 'ignore')
-            return levenshtein(preprocess(a), preprocess(b))
+
+        distance_func = functools.partial(distance_function, preprocess)
+
         self.knn_graph = KNNGraph(
             distance_func=distance_func,
             k=k)
