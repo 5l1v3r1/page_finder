@@ -1,5 +1,10 @@
 Page Finder
 
+Release 0.1.6
+-------------
+
+Remove ordered-set from dependencies
+
 Release 0.1.5
 -------------
 
