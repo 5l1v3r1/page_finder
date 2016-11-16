@@ -1,10 +1,9 @@
 from setuptools import setup
 from setuptools.extension import Extension
-from page_finder import __version__
 
 setup(
     name='page_finder',
-    version=__version__,
+    version='0.1.7',
     url='https://github.com/scrapinghub/page_finder',
     author='page_finder developers',
     maintainer='Pedro Lopez-Adeva Fernandez-Layos',

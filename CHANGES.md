@@ -1,5 +1,10 @@
 Page Finder
 
+Release 0.1.7
+-------------
+
+Install page_finder even if numpy is not installed
+
 Release 0.1.6
 -------------
 
