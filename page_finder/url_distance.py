@@ -1,5 +1,6 @@
 from six.moves.urllib_parse import urlparse, unquote, parse_qs
 
+
 def levenshtein_array(s1, s2):
     """
     Levenstein distance where insertion and deletions cost double as substitutions
@@ -23,6 +24,7 @@ def levenshtein_array(s1, s2):
 
     return previous_row[-1]
 
+
 def dict_distance(prep, dict1, dict2):
     distance = 0
     checkedkeys = 0
@@ -35,16 +37,18 @@ def dict_distance(prep, dict1, dict2):
 
     return distance + len(dict2) - checkedkeys
 
+
 def url_distance(preprocessor, url1, url2):
     url1 = urlparse(url1)
     url2 = urlparse(url2)
 
     process_fn = lambda s: preprocessor(unquote(s))
-    path1 = map(process_fn, url1.path.strip('/').split('/'))
-    path2 = map(process_fn, url2.path.strip('/').split('/'))
+    path1 = [process_fn(part) for part in  url1.path.strip('/').split('/')]
+    path2 = [process_fn(part) for part in  url2.path.strip('/').split('/')]
     path_distance = levenshtein_array(path1, path2)
 
-    query_distance = dict_distance(preprocessor,
+    query_distance = dict_distance(
+        preprocessor,
         parse_qs(url1.query, True),
         parse_qs(url2.query, True)
     )
