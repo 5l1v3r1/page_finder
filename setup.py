@@ -1,5 +1,12 @@
 from setuptools import setup
 from setuptools.extension import Extension
+import sys
+
+if sys.platform == 'win32':
+    ext_modules = []
+else:
+    ext_modules = [Extension("page_finder.edit_distance",
+                             sources=["page_finder/edit_distance.c"])]
 
 setup(
     name='page_finder',
@@ -10,8 +17,7 @@ setup(
     maintainer_email='ruairi@scrapinghub.com',
     install_requires=['numpy'],
     packages=['page_finder'],
-    ext_modules=[Extension("page_finder.edit_distance",
-                 sources=["page_finder/edit_distance.c"])],
+    ext_modules=ext_modules,
     license='MIT',
     keywords=['crawler', 'frontier', 'scrapy', 'web', 'requests'],
     classifiers=[
