@@ -10,7 +10,7 @@ else:
 
 setup(
     name='page_finder',
-    version='0.1.8',
+    version='0.1.9',
     url='https://github.com/scrapinghub/page_finder',
     author='page_finder developers',
     maintainer='Ruairi Fahy',
